@@ -1,0 +1,53 @@
+/* 
+Function Description: Creates a new sheet in a weekly calendar based in Google Sheets and automatically adjusts the dates to reflect the week, both within the sheet and in the sheet name. 
+The code references a horizontally-laid-out lists of 1. The start date of each week and 2. The complete week text. Both can be created easily in Sheets.
+*/
+
+function CalendarLoop() {
+  
+  // define looping variables
+  var sheetNameColumn = 2
+  var sheetToBeDuplicated = 2
+  var loopNumber = 1
+  
+  // begin loop
+  do {
+  
+  // CREATE SHEETS===========================================================
+  // activate sheet to be duplicated
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  ss.setActiveSheet(ss.getSheets()[sheetToBeDuplicated]);
+  
+  // duplicate the activated sheet
+  var newSheet = SpreadsheetApp.getActiveSpreadsheet().duplicateActiveSheet();
+  
+  // activate sheet with names
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  ss.setActiveSheet(ss.getSheets()[1]);
+  
+  // set sheet name variable
+  var nameRange = ss.getRange("h3:bh3");
+  var cell = nameRange.getCell(1, sheetNameColumn);
+  var sheetName = cell.getValues();
+  
+  // rename the duplicate to the sheetName variable
+  newSheet.setName(sheetName);
+    
+  // CHANGE SHEETS===========================================================
+  // activate sheet with names
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  ss.setActiveSheet(ss.getSheets()[1]);
+    
+  // set first date cell to previous week + 1
+  var firstDateCellValue = ss.getRange("h1:bh1").getCell(1,sheetToBeDuplicated).getValue();
+  ss.setActiveSheet(ss.getSheets()[sheetToBeDuplicated+1]).getRange("b1").setValue(firstDateCellValue);
+  
+  // level up the looping variables
+  sheetNameColumn = sheetNameColumn + 1
+  sheetToBeDuplicated = sheetToBeDuplicated + 1
+  loopNumber = loopNumber + 1
+  
+  // end loop 
+  }while (loopNumber < 53); 
+  
+}
